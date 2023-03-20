@@ -12,10 +12,20 @@ Aggiungere una select accanto al bottone di generazione, che fornisca una scelta
 */
 
 // Creo un Event submit che mi permette di selezionare il livello:
-
-const levelSelect = document.getElementById('LevelSelect');
-levelSelect.addEventListener('submit', play);
-
+function genBombs(cellNumbers){
+    const NUM_BOMBS = 16;
+    const bombs = [];
+    b = 0;
+    while(bombs.length < NUM_BOMBS){
+        randomBombs = Math.floor(Math.random() * cellNumbers) + 1;
+        // controllare le posizioni dell'array se c'è un numero gia generato rigeneralo 
+        if(bombs.includes(randomBombs) === false || b === 0){
+            bombs[b] = randomBombs;
+            b++;
+        }
+    }
+    return bombs;
+}
 function play(e) {
     e.preventDefault();
     const difficulty = document.getElementById('Difficulty').value;
@@ -34,6 +44,8 @@ function play(e) {
             cellNumbers = 49;
             break;
     };
+    const bomb = genBombs(cellNumbers);
+    console.log(bomb);
     console.log(cellNumbers);
     let cellPerRow = Math.sqrt(cellNumbers);
     console.log(cellPerRow);
@@ -50,12 +62,23 @@ function play(e) {
         cell.innerHTML = i;
         cellBox.appendChild(cell);
 
-        cell.addEventListener('click', function(){
-            cell.classList.add('CPM-bg-green')
-            console.log(i)
-        })
-    };
-}
-
 // Creo un evento che cambia il colore delle celle al click:
-    
+        cell.addEventListener('click', function(){
+            if(bomb.includes(parseInt(cell.innerText)) === true){
+                for(j = 0; j < bomb.length; j++){
+                    if(bomb[j] === parseInt(cell.innerText)) cell.classList.add('CPM-bg-Bombs')
+                    console.log(bomb[j])
+                }   
+            }   
+        });
+    };
+};
+
+
+
+// MAIN
+const levelSelect = document.getElementById('LevelSelect');
+levelSelect.addEventListener('submit', play);
+
+
+
